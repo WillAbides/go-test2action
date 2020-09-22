@@ -60,10 +60,10 @@ world
     --- FAIL: TestWithSubs/failing_with_println_output (0.00s)
 FAIL
 FAIL	github.com/willabides/go-test2action/internal/testdata/dummytest	0.008s
-::error file=./internal/testdata/dummytest/dummy_test.go,line=8,col=0::%3D%3D%3D+RUN+++TestFailing%0A---+FAIL%3A+TestFailing+%280.00s%29%0A
-::error file=./internal/testdata/dummytest/dummy_test.go,line=12,col=0::%3D%3D%3D+RUN+++TestWithSubs%0A---+FAIL%3A+TestWithSubs+%280.00s%29%0A
-::error file=./internal/testdata/dummytest/dummy_test.go,line=12,col=0::%3D%3D%3D+RUN+++TestWithSubs%2Ffailing%0A++++---+FAIL%3A+TestWithSubs%2Ffailing+%280.00s%29%0A
-::error file=./internal/testdata/dummytest/dummy_test.go,line=12,col=0::%3D%3D%3D+RUN+++TestWithSubs%2Ffailing_with_println_output%0Ahello%0Aworld%0A++++---+FAIL%3A+TestWithSubs%2Ffailing_with_println_output+%280.00s%29%0A
+::error file=./internal/testdata/dummytest/dummy_test.go,line=8,col=0::=== RUN   TestFailing%0A--- FAIL: TestFailing (0.00s)%0A
+::error file=./internal/testdata/dummytest/dummy_test.go,line=12,col=0::=== RUN   TestWithSubs%0A--- FAIL: TestWithSubs (0.00s)%0A
+::error file=./internal/testdata/dummytest/dummy_test.go,line=12,col=0::=== RUN   TestWithSubs/failing%0A    --- FAIL: TestWithSubs/failing (0.00s)%0A
+::error file=./internal/testdata/dummytest/dummy_test.go,line=12,col=0::=== RUN   TestWithSubs/failing_with_println_output%0Ahello%0Aworld%0A    --- FAIL: TestWithSubs/failing_with_println_output (0.00s)%0A
 `
 	require.NoError(t, err)
 	var outbytes []byte
