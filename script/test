@@ -4,4 +4,12 @@ set -e
 
 CDPATH="" cd -- "$(dirname -- "$(dirname -- "$0")")"
 
+make bin/go-test2action
+
+if [ -n "$CI" ]; then
+  go test -race -covermode=atomic -json ./... | bin/go-test2action --passthrough \
+    --root-pkg github.com/willabides/go-test2action
+  exit
+fi
+
 go test -race -covermode=atomic ./...
