@@ -13,6 +13,9 @@ bin/shellcheck:
 bin/gobin:
 	script/bindown install $(notdir $@)
 
+bin/goreleaser:
+	script/bindown install $(notdir $@)
+
 bin/go-test2action:
 	${GOBUILD} -o $@ ./cmd/gotest2action
 
