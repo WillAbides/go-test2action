@@ -1,4 +1,4 @@
-module github.com/willabides/goproject-tmpl
+module github.com/willabides/go-test2action
 
 go 1.14
 

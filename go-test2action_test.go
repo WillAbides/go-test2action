@@ -1,4 +1,4 @@
-package goprojecttmpl
+package gotest2action
 
 import (
 	"testing"
