@@ -15,6 +15,10 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func TestFail(t *testing.T) {
+	require.True(t, false)
+}
+
 func Test_findTest(t *testing.T) {
 	_, _, exLine, ok := runtime.Caller(0)
 	require.True(t, ok)
