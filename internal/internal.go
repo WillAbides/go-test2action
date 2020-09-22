@@ -7,6 +7,7 @@ import (
 	"go/parser"
 	"go/token"
 	"io"
+	"net/url"
 	"os"
 	"path/filepath"
 	"strings"
@@ -39,7 +40,12 @@ func OutputFailures(input io.Reader, output io.Writer, rootPath, rootPkg string,
 		if err != nil {
 			loc = nil
 		}
-		commander.SetErrorMessage(resEvent.Output, loc)
+		msg := events.output()
+		if msg == "" {
+			msg = `a test failed with no output ¯\_(ツ)_/¯ `
+		}
+		msg = url.QueryEscape(msg)
+		commander.SetErrorMessage(msg, loc)
 	}
 	return len(failingTests)
 }
