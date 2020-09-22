@@ -62,21 +62,6 @@ func (te testEvents) withPackage() testEvents {
 	return res
 }
 
-func (te testEvents) sortEvents() testEvents {
-	sort.Slice(te, func(i, j int) bool {
-		return te[i].Time.Before(te[j].Time)
-	})
-	return te
-}
-
-func (te testEvents) output() string {
-	output := ""
-	for _, ev := range te.ByAction()["output"].sortEvents() {
-		output += ev.Output
-	}
-	return output
-}
-
 func (te testEvents) result() *testEvent {
 	for _, event := range te {
 		for _, res := range resultActions {

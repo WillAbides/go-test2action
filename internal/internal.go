@@ -14,6 +14,7 @@ import (
 	"github.com/willabides/ezactions"
 )
 
+// OutputFailures is what main calls
 func OutputFailures(input io.Reader, output io.Writer, rootPath, rootPkg string, passthrough bool) int {
 	commander := &ezactions.WorkflowCommander{
 		Printer: func(s string) {
@@ -34,38 +35,34 @@ func OutputFailures(input io.Reader, output io.Writer, rootPath, rootPkg string,
 		}
 		pkg := resEvent.Package
 		testName := resEvent.Test
-		var loc *ezactions.CommanderFileLocation
-		testFile, testLine, err := findTest(pkg, testName, rootPath, rootPkg)
-		if err == nil && testLine != 0 {
-			loc = &ezactions.CommanderFileLocation{
-				File: testFile,
-				Line: testLine,
-			}
+		loc, err := findTest(pkg, testName, rootPath, rootPkg)
+		if err != nil {
+			loc = nil
 		}
 		commander.SetErrorMessage(resEvent.Output, loc)
 	}
 	return len(failingTests)
 }
 
-func findTest(pkg, testName, rootPath, rootPkg string) (string, int, error) {
+func findTest(pkg, testName, rootPath, rootPkg string) (*ezactions.CommanderFileLocation, error) {
 	if !strings.HasPrefix(pkg, rootPkg) {
-		return "", 0, fmt.Errorf("%s does not contain %s", rootPkg, pkg)
+		return nil, fmt.Errorf("%s does not contain %s", rootPkg, pkg)
 	}
 	relPkg := strings.TrimPrefix(pkg, rootPkg)
 	relPkg = filepath.FromSlash(relPkg)
 	dir := filepath.Join(rootPath, relPkg)
 	dirstat, err := os.Stat(dir)
 	if err != nil {
-		return "", 0, errors.New("failed statting directory: " + err.Error())
+		return nil, errors.New("failed statting directory: " + err.Error())
 	}
 	if !dirstat.IsDir() {
-		return "", 0, fmt.Errorf("not a directory: %q", dir)
+		return nil, fmt.Errorf("not a directory: %q", dir)
 	}
 	testName = strings.Split(testName, "/")[0]
 	fset := token.NewFileSet()
 	pkgs, err := parser.ParseDir(fset, dir, nil, 0)
 	if err != nil {
-		return "", 0, errors.New("failed parsing directory: " + err.Error())
+		return nil, errors.New("failed parsing directory: " + err.Error())
 	}
 	var testFile string
 	var testLine int
@@ -88,8 +85,11 @@ func findTest(pkg, testName, rootPath, rootPkg string) (string, int, error) {
 	}
 	testFile, err = filepath.Rel(rootPath, testFile)
 	if err != nil {
-		return "", 0, err
+		return nil, err
 	}
 	testFile = strings.TrimPrefix(filepath.Join("..", testFile), ".")
-	return testFile, testLine, nil
+	return &ezactions.CommanderFileLocation{
+		File: testFile,
+		Line: testLine,
+	}, nil
 }
